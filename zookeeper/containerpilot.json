@@ -1,0 +1,26 @@
+{
+  "consul": "{{ .CONSUL }}:8500",
+  "preStart": ["/opt/zookeeper/manage.sh", "generateConfig"],
+  "logging": {
+    "level": "DEBUG",
+    "format": "text",
+    "output": "stdout"
+  },
+  "services": [
+    {
+      "name": "zookeeper",
+      "port": 2181,
+      "health": ["/opt/zookeeper/manage.sh", "health"],
+      "poll": 3,
+      "ttl": 10
+    }
+  ],
+  "backends": [
+    {
+      "name": "zookeeper",
+      "poll": 3,
+      "onChange": ["/opt/zookeeper/manage.sh", "reload"]
+    }
+  ],
+  "preStop": ["/opt/zookeeper/manage.sh", "cleanup"]
+}
